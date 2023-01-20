@@ -43,19 +43,29 @@ if __name__ == "__main__":
     price_norm = normalize(data['price'])
     km_norm = normalize(data['km'])
 
+    plt.subplot(2, 2, 1)
+    plt.scatter(data['km'], data['price'])
+    plt.title('Before normalization')
+    plt.subplot(2, 2, 2)
+    plt.scatter(km_norm, price_norm)
+    plt.title('After normalization')
+
+    plt.subplot(2, 2, 3)
+    plt.scatter(km_norm, price_norm)
+    plt.title('Training')
     while True:
         new = train([km_norm, price_norm], learning_rate, theta)
         if new == theta:
             break
         theta = new
+        plt.plot(km_norm, [theta[0] + (theta[1] * x) for x in km_norm], alpha=0.1)            
     denormalized_theta = denormalize(theta, data)
 
-    new_csv = pd.DataFrame({'theta0': [denormalized_theta[0]], 'theta1': [denormalized_theta[1]]})
-    new_csv.to_csv('data_normalized.csv', index=False) # csv that will be used by predict.py to predict the price of a car based on the distance
-
+    plt.subplot(2, 2, 4)
+    plt.title('Linear regression')
     plt.scatter(data['km'], data['price'])
-    plt.plot(data['km'], [denormalized_theta[0] + (denormalized_theta[1] * x) for x in data['km']], color='red')
-    plt.show() # Graph to visualize the data and the linear regression
+    new_csv = pd.DataFrame({'theta0': [denormalized_theta[0]], 'theta1': [denormalized_theta[1]]})
+    new_csv.to_csv('data_normalized.csv', index=False)
 
-    # TODO: - Add a graph to visualize all the iterations of the linear regression (bonus)
-    #       - 
+    plt.plot(data['km'], [denormalized_theta[0] + (denormalized_theta[1] * x) for x in data['km']], color='red')
+    plt.show()
