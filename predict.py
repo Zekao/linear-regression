@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 from sklearn.metrics import r2_score
+import style
 
 def predict(distance):
     '''
@@ -22,13 +23,13 @@ def predict(distance):
     try:
         data = pd.read_csv('data_normalized.csv')
     except:
-        print("Error: file data_normalized.csv not found")
-        sys.exit(1)
+        print("Error: You must train the model first")
+        price = 0
+        return price
     header = data.columns
     theta = [float(x) for x in data.values[0]]
     price = theta[0] + (theta[1] * distance)
     return price
-    # calculate the r2 score of the model
 
 def r_square_calculation():
     '''
@@ -57,7 +58,10 @@ def r_square_calculation():
 
 if __name__ == "__main__":
 
-    value = (int(input("Enter a distance: ")))
-    print("Estimated price: ", predict(value))
-    if (input("Do you want to calculate the R Square score? (y/n): ") == 'y'):
-        r_square_calculation()
+    try:
+        value = (int(input("Enter a distance: ")))
+        print("Estimated price: ", predict(value))
+        if (input("Do you want to calculate the R Square score? (y/n): ") == 'y'):
+            r_square_calculation()
+    except Exception as e:
+        print(style.red("Error: ", e))
